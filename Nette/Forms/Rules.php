@@ -254,21 +254,22 @@ final class Rules extends Nette\Object implements \IteratorAggregate
 	public static function formatMessage($rule, $withValue)
 	{
 		$message = $rule->message;
-		if ($message instanceof Nette\Utils\Html) {
-			return $message;
-		}
+		$isPlain = !$message instanceof \Nette\Utils\Html;
 		if (!isset($message)) { // report missing message by notice
 			$message = static::$defaultMessages[$rule->operation];
 		}
-		if ($translator = $rule->control->getForm()->getTranslator()) {
+		if ($isPlain && $translator = $rule->control->getForm()->getTranslator()) {
 			$message = $translator->translate($message, is_int($rule->arg) ? $rule->arg : NULL);
 		}
 		$message = vsprintf(preg_replace('#%(name|label|value)#', '%$0', $message), (array) $rule->arg);
 		$message = str_replace('%name', $rule->control->getName(), $message);
 		$message = str_replace('%label', $rule->control->translate($rule->control->caption), $message);
 		if ($withValue && strpos($message, '%value') !== FALSE) {
-			$message = str_replace('%value', $rule->control->getValue(), $message);
+			$val = $rule->control->getValue();
+			$val = $isPlain ? $val : htmlspecialchars($val, ENT_QUOTES);
+			$message = str_replace('%value', $val, $message);
 		}
+		$message = $isPlain ? $message : \Nette\Utils\Html::el()->setHtml($message);
 		return $message;
 	}
 
