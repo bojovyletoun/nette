@@ -577,12 +577,8 @@ final class Debugger
 	 * @param  bool   return output instead of printing it? (bypasses $productionMode)
 	 * @return mixed  variable itself or dump
 	 */
-	public static function dump($var, $return = FALSE)
+	public static function export($var, $return = FALSE)
 	{
-		if (!$return && self::$productionMode) {
-			return $var;
-		}
-
 		$output = "<pre class=\"nette-dump\">" . Helpers::htmlDump($var) . "</pre>\n";
 
 		if (!$return) {
@@ -621,6 +617,22 @@ final class Debugger
 			echo $output;
 			return $var;
 		}
+	}
+
+
+
+	/**
+	 * Dumps information about a variable in readable format (prints in development mode only)
+	 * @param  mixed  variable to dump
+	 * @param  bool   return output instead of printing it? (bypasses $productionMode)
+	 * @return mixed  variable itself or dump
+	 */
+	public static function dump($var, $return = FALSE)
+	{
+		if (!$return && self::$productionMode) {
+			return $var;
+		}
+		return self::export($var, $return);
 	}
 
 
