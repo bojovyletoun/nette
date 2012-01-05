@@ -544,8 +544,10 @@ abstract class BaseControl extends Nette\ComponentModel\Component implements ICo
 				}
 			}
 			if ($rule->type === Rule::VALIDATOR) {
-				$item = array('op' => ($rule->isNegative ? '~' : '') . $op, 'msg' =>(string) $rules->formatMessage($rule, FALSE));
-
+				$msg = $rules->formatMessage($rule, FALSE);
+				$item = array('op' => ($rule->isNegative ? '~' : '') . $op, 'msg' =>(string) $msg);
+				$item['html'] = $msg instanceof Html;
+				
 			} elseif ($rule->type === Rule::CONDITION) {
 				$item = array(
 					'op' => ($rule->isNegative ? '~' : '') . $op,
