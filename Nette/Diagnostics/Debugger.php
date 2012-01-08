@@ -575,11 +575,12 @@ final class Debugger
 	 * Dumps information about a variable in readable format.
 	 * @param  mixed  variable to dump
 	 * @param  bool   return output instead of printing it? (bypasses $productionMode)
+	 * @param  bool   allow printing also in production mode?
 	 * @return mixed  variable itself or dump
 	 */
-	public static function dump($var, $return = FALSE)
+	public static function dump($var, $return = FALSE, $bypassProductionMode = FALSE)
 	{
-		if (!$return && self::$productionMode) {
+		if (!$return && self::$productionMode && !$bypassProductionMode) {
 			return $var;
 		}
 
