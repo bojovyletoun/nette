@@ -218,7 +218,11 @@ class NetteExtension extends Nette\Config\CompilerExtension
 			->setClass('Nette\Application\Routers\RouteList');
 
 		foreach ($config['routes'] as $mask => $action) {
-			$router->addSetup('$service[] = new Nette\Application\Routers\Route(?, ?);', array($mask, $action));
+			if (is_array($action)) {
+				$router->addSetup('$service[] = new Nette\Application\Routers\Route(?, ?, ?)', array($mask, $action[0], constant("Nette\Application\Routers\Route::{$action[1]}")));
+			} else {
+				$router->addSetup('$service[] = new Nette\Application\Routers\Route(?, ?)', array($mask, $action));
+			}
 		}
 
 		if ($container->parameters['debugMode'] && $config['debugger']) {
