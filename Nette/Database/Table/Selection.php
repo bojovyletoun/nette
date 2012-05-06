@@ -883,4 +883,19 @@ class Selection extends Nette\Object implements \Iterator, \ArrayAccess, \Counta
 		return $return;
 	}
 
+
+
+	/**
+	 * Returns all rows as associative array of rows as array
+	 * @return array
+	 */
+	public function fetchAll()
+	{
+		$return = array();
+		foreach ($this as $k => $v) {
+			$return[$k] = $v->toArray();
+		}
+		return $return;
+	}
+
 }
