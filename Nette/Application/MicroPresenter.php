@@ -54,13 +54,11 @@ class MicroPresenter extends Nette\Object implements Application\IPresenter
 
 
 	/**
-	 * @param  Nette\Application\Request
-	 * @return Nette\Application\IResponse
+	 * Conditional redirect to canonicalized URI.
+	 * @return void
 	 */
-	public function run(Application\Request $request)
+	public function canonicalize()
 	{
-		$this->request = $request;
-
 		$httpRequest = $this->context->getByType('Nette\Http\IRequest');
 		if (!$httpRequest->isAjax() && ($request->isMethod('get') || $request->isMethod('head'))) {
 			$refUrl = clone $httpRequest->getUrl();
@@ -69,6 +67,17 @@ class MicroPresenter extends Nette\Object implements Application\IPresenter
 				return new Responses\RedirectResponse($url, Http\IResponse::S301_MOVED_PERMANENTLY);
 			}
 		}
+	}
+
+
+
+	/**
+	 * @param  Nette\Application\Request
+	 * @return Nette\Application\IResponse
+	 */
+	public function run(Application\Request $request)
+	{
+		$this->request = $request;
 
 		$params = $request->getParameters();
 		if (!isset($params['callback'])) {
