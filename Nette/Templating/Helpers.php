@@ -209,9 +209,17 @@ final class Helpers
 		}
 
 		$time = Nette\DateTime::from($time);
-		return Strings::contains($format, '%')
-			? strftime($format, $time->format('U')) // formats according to locales
-			: $time->format($format); // formats using date()
+		if (!Strings::contains($format, '%'))
+			$output = $time->format($format); // formats using date()
+		else {
+			$output = strftime($format, $time->format('U')); // formats according to locales
+			if (!Strings::checkEncoding($output)) {
+				$format = iconv('UTF-8', 'cp1250//IGNORE', $format);
+				$output = strftime($format, $time->format('U'));
+				$output = iconv('cp1250', 'UTF-8', $output);
+			}
+		}
+		return $output;
 	}
 
 
